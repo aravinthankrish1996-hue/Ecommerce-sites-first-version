@@ -2,7 +2,7 @@
   <Layout>
     <template v-slot:content>
       <section class="breadcrumb-area breadcrumb-bg"
-        data-background="/frontend_assets/img/bg/breadcrumb_bg01.jpg">
+        data-background="">
         <div class="container">
           <div class="row">
             <div class="col-12">
