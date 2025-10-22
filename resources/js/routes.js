@@ -19,6 +19,8 @@ import Myorders from './frontTemplate/Myorders.vue';
 
 import MyOrdersDetails from './frontTemplate/MyOrdersDetails.vue';
 
+import contact from './frontTemplate/contact.vue';
+
 
 const routes = [
 
@@ -76,7 +78,12 @@ const routes = [
         component: MyOrdersDetails,
 
     },
+  {
+        name: 'contact',
+        path: '/contact',
+        component: contact,
 
+    },
 ];
 
 const router = createRouter({

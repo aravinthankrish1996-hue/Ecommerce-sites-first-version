@@ -2,45 +2,66 @@
     <Layout>
         <!-- main-area -->
         <template v-slot:content="slotProps">
-            <!-- slider-area -->
-           <section class="slider-area position-relative">
-        <div class="third-slider-active">
-            <!-- Move v-for to this level -->
-            <div v-for="item in homeBanner" :key="item.id" class="third-slider-item third-slider-bg"
-                data-background="/frontend_assets/img/slider/third_slider_bg.jpg">
-                <div class="container custom-container-two">
-                    <div class="third-slider-wrap">
-                        <div class="row align-items-center">
-                            <div class="col-lg-6">
-                                <div class="slider-content">
-                                    <h3 class="sub-title" data-animation-in="fadeInUp" data-delay-in=".2"
-                                        data-duration-in="1.5">best offer !</h3>
-                                    <h2 class="title" data-animation-in="fadeInUp" data-delay-in=".4"
-                                        data-duration-in="1.5">{{ item.text }}</h2>
-                                    <p data-animation-in="fadeInUp" data-delay-in=".6" data-duration-in="1.5">
-                                        Get offer Today Only</p>
-                                    <a href="shop-sidebar.html" class="btn" data-animation-in="fadeInUp"
-                                        data-delay-in=".8" data-duration-in="1.5">Shop now</a>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="third-slider-img">
-                                    <div class="img-shape"
-                                        data-background="/frontend_assets/img/slider/third_slide_shape.png"
-                                        data-animation-in="zoomIn" data-delay-in="1" data-duration-in="1.5">
+            <!-- slider-area with dynamic navigation -->
+            <section class="slider-area position-relative">
+                 
+                <div class="third-slider-active">
+                    <!-- Slider Items -->
+                    <div v-for="(item, index) in homeBanner" :key="item.id" class="third-slider-item third-slider-bg"
+                        :class="{ 'active-slide': currentSlide === index }" v-show="currentSlide === index"
+                        :style="{ backgroundImage: 'url(/frontend_assets/img/slider/third_slider_bg.jpg)' }">
+                        <div class="container custom-container-two">
+                           
+                            <div class="third-slider-wrap">
+                                <div class="row align-items-center">
+                                    <div class="col-lg-6">
+                                        <div class="slider-content">
+                                            <h3 class="sub-title" data-animation-in="fadeInUp" data-delay-in=".2"
+                                                data-duration-in="1.5">best offer !</h3>
+                                            <h2 class="title" data-animation-in="fadeInUp" data-delay-in=".4"
+                                                data-duration-in="1.5">{{ item.text }}</h2> 
+                                            <p data-animation-in="fadeInUp" data-delay-in=".6" data-duration-in="1.5">
+                                                Get offer Today Only</p>
+                                            <a href="shop-sidebar.html" class="btn" data-animation-in="fadeInUp"
+                                                data-delay-in=".8" data-duration-in="1.5">Shop now</a>
+                                        </div>
                                     </div>
-                                    <img :src="item.image_url" alt="" class="main-img"
-                                        style="height:537px;width: 560px;" data-animation-in="slideInRight2"
-                                        data-delay-in="1" data-duration-in="1.5">
+                                    <div class="col-lg-6">
+                                        <div class="third-slider-img">
+                                            <div class="img-shape"
+                                                data-background="/frontend_assets/img/slider/third_slide_shape.png"
+                                                data-animation-in="zoomIn" data-delay-in="1" data-duration-in="1.5">
+                                            </div>
+                                            <img :src="item.image_url" :alt="item.text" class="main-img"
+                                                style="height:537px;width: 560px;" data-animation-in="slideInRight2"
+                                                data-delay-in="1" data-duration-in="1.5">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>  
-    <!-- slider-area-end -->
+               
+
+                <!-- Navigation Arrows -->
+                <div class="slider-nav" v-if="homeBanner.length > 1">
+                    <button @click="prevSlide" class="slider-arrow slider-prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button @click="nextSlide" class="slider-arrow slider-next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <!-- Dots Navigation -->
+                <div class="slider-dots" v-if="homeBanner.length > 1">
+                    <span v-for="(item, index) in homeBanner" :key="'dot-' + item.id" @click="goToSlide(index)"
+                        class="dot" :class="{ 'active': currentSlide === index }"></span>
+                </div>
+            </section>
+            <!-- slider-area-end -->
+
 
             <!-- shoes-category-area -->
             <div class="shoes-category-area pt-80 pb-30">
@@ -49,12 +70,12 @@
                         <div v-for="item in getShortArray(10)" :key="item.id" class="col-lg-4 col-md-6 col-sm-9">
                             <div class="shoes-cat-item mb-50">
                                 <div class="thumb mb-30">
-                                    <a href="shop-sidebar.html"><img :src="item.image_url" alt=""></a>
+                                    <a href=""><img :src="item.image_url" alt=""></a>
                                 </div>
                                 <div class="content">
                                     <ul>
-                                        <li><a href="shop-sidebar.html"> {{ item.name }}</a></li>
-                                        <li><span>18</span></li>
+                                        <li><a href=""> {{ item.name }}</a></li>
+                                        <li><span></span></li>
                                     </ul>
                                 </div>
                             </div>
@@ -81,9 +102,10 @@
                                 <ul class="nav nav-tabs" id="trendingTab" role="tablist">
                                     <li v-for="(catItem, index) in getShortArray(10)" :key="catItem.id" class="nav-item"
                                         role="presentation">
-                                        <a :class="'nav-link ' + showActiveClass(1, index)" :id="'cat-tab'+catItem.id"
+                                        <a :class="'nav-link ' + showActiveClass(1, index)" :id="'cat-tab' + catItem.id"
                                             data-toggle="tab" :href="'#cat' + catItem.id" role="tab"
-                                            :aria-controls="'cat' + catItem.id" aria-selected="true">{{ catItem.name }}</a>
+                                            :aria-controls="'cat' + catItem.id" aria-selected="true">{{ catItem.name
+                                            }}</a>
                                     </li>
                                 </ul>
                                 <p class="offer"><a href="#">Limited-Time Offer!</a></p>
@@ -95,21 +117,25 @@
                                     :class="'tab-pane ' + showActiveClass(2, index)" :id="'cat' + catItem.id"
                                     role="tabpanel" :aria-labelledby="'cat-tab' + catItem.id">
                                     <div class="trending-products-banner banner-animation">
-                                        <a href="shop-sidebar.html"><img :src="catItem.image_url"
+                                        <a href=""><img :src="catItem.image_url"
                                                 style="height:362px;width: 470px;" alt=""></a>
                                     </div>
-                                    <div v-if="(catItem.products && catItem.products.length > 0)" class="row trending-product-active">
+                                    <div v-if="(catItem.products && catItem.products.length > 0)"
+                                        class="row trending-product-active">
                                         <div v-for="item in catItem.products" :key="item.id" class="col">
                                             <div class="features-product-item">
                                                 <div class="features-product-thumb">
                                                     <div class="discount-tag">-20%</div>
-                                                    <a href="shop-details.html">
-                                                        <img :src="item.image_url" style="height:266px;width: 235px;" alt="">
+                                                    <a href="">
+                                                        <img :src="item.image_url" style="height:266px;width: 235px;"
+                                                            alt="">
                                                     </a>
                                                     <div class="product-overlay-action">
                                                         <ul>
-                                                            <li><a href="cart.html"><i class="far fa-heart"></i></a></li>
-                                                            <li><a href="shop-details.html"><i class="far fa-eye"></i></a></li>
+                                                            <li><a href="cart.html"><i class="far fa-heart"></i></a>
+                                                            </li>
+                                                            <li><a href=""><i
+                                                                        class="far fa-eye"></i></a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -121,8 +147,10 @@
                                                         <i class="far fa-star"></i>
                                                         <i class="far fa-star"></i>
                                                     </div>
-                                                    <h5><a href="shop-details.html">{{ item.name }}</a></h5>
-                                                    <p class="price">INR {{ item.product_attributer && item.product_attributer[0] ? item.product_attributer[0].price : 'N/A' }}</p>
+                                                    <h5><a href="">{{ item.name }}</a></h5>
+                                                    <p class="price">INR {{ item.product_attributer &&
+                                                        item.product_attributer[0] ? item.product_attributer[0].price :
+                                                        'N/A' }}</p>
                                                     <div class="features-product-bottom">
                                                         <ul>
                                                             <li class="color-option">
@@ -130,14 +158,15 @@
                                                                 <span class="cyan"></span>
                                                                 <span class="orange"></span>
                                                             </li>
-                                                            <li class="limited-time"><a href="#">Limited-Time Offer!</a></li>
+                                                            <li class="limited-time"><a href="#">Limited-Time Offer!</a>
+                                                            </li>
                                                         </ul>
                                                     </div>
                                                 </div>
                                                 <div class="features-product-cart">
-                                                    <a href="javascript:void(0)" 
-                                                       @click="handleAddToCart(item, slotProps.addToCart)">
-                                                       add to cart
+                                                    <a href="javascript:void(0)"
+                                                        @click="handleAddToCart(item, slotProps.addToCart)">
+                                                        add to cart
                                                     </a>
                                                 </div>
                                             </div>
@@ -177,16 +206,16 @@
                             :class="'col-xl-3 col-lg-4 col-sm-6 grid-item grid-sizer cat-' + item.category_id">
                             <div class="new-arrival-item text-center mb-50">
                                 <div class="thumb mb-25">
-                                   <RouterLink :to="'/product/'+item.item_code+ '/'+item.slug">
+                                    <RouterLink :to="'/product/' + item.item_code + '/' + item.slug">
                                         <img :src="item.image_url" style="height:296px;width: 344px;" alt="">
-                                     </RouterLink>
+                                    </RouterLink>
                                     <div class="product-overlay-action">
                                         <ul>
                                             <li><a href="cart.html"><i class="far fa-heart"></i></a></li>
                                             <li><a href="shop-details.html"><i class="far fa-eye"></i></a></li>
                                             <li>
-                                                <a href="javascript:void(0)" 
-                                                   @click="handleAddToCart(item, slotProps.addToCart)">
+                                                <a href="javascript:void(0)"
+                                                    @click="handleAddToCart(item, slotProps.addToCart)">
                                                     <i class="fa fa-shopping-cart"></i>
                                                 </a>
                                             </li>
@@ -195,11 +224,12 @@
                                 </div>
                                 <div class="content">
                                     <h5>
-                                        <RouterLink :to="'/product/'+item.item_code+ '/'+item.slug">
+                                        <RouterLink :to="'/product/' + item.item_code + '/' + item.slug">
                                             {{ item.name }}
                                         </RouterLink>
                                     </h5>
-                                    <span class="price">INR {{ item.product_attributer && item.product_attributer[0] ? item.product_attributer[0].price : 'N/A' }}</span>
+                                    <span class="price">INR {{ item.product_attributer && item.product_attributer[0] ?
+                                        item.product_attributer[0].price : 'N/A' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -320,13 +350,6 @@ import { RouterLink } from 'vue-router';
 
 export default {
     name: 'Index',
-     props: {
-        homeBanner: {
-            type: Array,
-            required: true,
-            default: () => []
-        }
-    },
     components: {
         Layout,
         RouterLink
@@ -338,13 +361,71 @@ export default {
             homeBrands: [],
             homeProducts: [],
             catCount: 0,
+            // Slider state
+            currentSlide: 0,
+            // autoPlayInterval: null,
+            // autoPlay: true,
+            // autoPlayDelay: 5000
         }
     },
     mounted() {
         console.log('Index file call');
         this.getHomeBanner();
+        // this.startAutoPlay();
+    },
+    // beforeUnmount() {
+    //     this.stopAutoPlay();
+    // },
+    watch: {
+        // homeBanner(newVal) {
+        //     if (newVal.length > 1) {
+        //         this.startAutoPlay();
+        //     }
+        // }
     },
     methods: {
+        // Slider methods
+        nextSlide() {
+            if (this.homeBanner.length <= 1) return;
+            this.currentSlide = (this.currentSlide + 1) % this.homeBanner.length;
+            console.log('Next slide:', this.currentSlide, 'Total banners:', this.homeBanner.length);
+            this.resetAutoPlay();
+        },
+        prevSlide() {
+            if (this.homeBanner.length <= 1) return;
+            this.currentSlide = this.currentSlide === 0
+                ? this.homeBanner.length - 1
+                : this.currentSlide - 1;
+            console.log('Previous slide:', this.currentSlide);
+            this.resetAutoPlay();
+        },
+        goToSlide(index) {
+            this.currentSlide = index;
+            console.log('Go to slide:', this.currentSlide);
+            this.resetAutoPlay();
+        },
+        startAutoPlay() {
+            if (this.homeBanner.length <= 1) return;
+            this.stopAutoPlay();
+            this.autoPlayInterval = setInterval(() => {
+                this.nextSlide();
+            }, this.autoPlayDelay);
+            console.log('Auto-play started');
+        },
+        stopAutoPlay() {
+            if (this.autoPlayInterval) {
+                clearInterval(this.autoPlayInterval);
+                this.autoPlayInterval = null;
+                console.log('Auto-play stopped');
+            }
+        },
+        resetAutoPlay() {
+            if (this.autoPlay && this.homeBanner.length > 1) {
+                this.stopAutoPlay();
+                this.startAutoPlay();
+            }
+        },
+
         // Handle add to cart with proper error checking
         handleAddToCart(item, addToCartFunction) {
             try {
@@ -357,7 +438,7 @@ export default {
 
                 // Get product attributes
                 const productAttributes = item.product_attributer || item.product_attributes;
-                
+
                 if (!productAttributes || !productAttributes[0]) {
                     console.error('Product attributes missing for:', item);
                     alert('Product attributes are missing');
@@ -402,7 +483,7 @@ export default {
 
                 if (response.status === 200 && response.data.data) {
                     const data = response.data.data;
-                    
+
                     this.homeBanner = data.banner || [];
                     this.homeCategories = data.categories || [];
                     this.homeBrands = data.brands || [];
@@ -423,3 +504,112 @@ export default {
     }
 }
 </script>
+
+<style >
+/* Slider Navigation Styles */
+.slider-area {
+    position: relative;
+    overflow: hidden;
+}
+
+.third-slider-active {
+    position: relative;
+    min-height: 600px;
+}
+
+.third-slider-item {
+    width: 100%;
+    transition: opacity 0.5s ease-in-out;
+    background-size: cover;
+    background-position: center;
+}
+
+.slider-nav {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.slider-arrow {
+    pointer-events: all;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.slider-arrow:hover {
+    background: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.slider-arrow i {
+    font-size: 20px;
+    color: #333;
+}
+
+.slider-dots {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.dot:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.dot.active {
+    background: #fff;
+    border-color: #333;
+    transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+    .slider-arrow {
+        width: 40px;
+        height: 40px;
+    }
+
+    .slider-arrow i {
+        font-size: 16px;
+    }
+
+    .slider-nav {
+        padding: 0 10px;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+    }
+}
+</style>

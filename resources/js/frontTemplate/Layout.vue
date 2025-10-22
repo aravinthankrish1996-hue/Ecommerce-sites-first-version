@@ -76,9 +76,9 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <li><a href="about-us.html">About Us</a></li>
+                                        <!-- <li><a href="about-us.html">About Us</a></li> -->
 
-                                        <li><a href="contact.html">Contact Us</a></li>
+                                        <li> <router-link :to="'/contact'">Contact Us</router-link></li>
                                     </ul>
                                 </div>
                                 <div class="header-action d-none d-md-block">
