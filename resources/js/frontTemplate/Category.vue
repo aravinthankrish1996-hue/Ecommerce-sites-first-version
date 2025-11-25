@@ -97,7 +97,7 @@
                     <ul>
                       <li v-for="item in categories" :key="item.id">
                         <router-link :to="'/category/' + item.slug">{{ item.name }}</router-link>
-                        <span>(6)</span>
+                        <!-- <span>(6)</span> -->
                       </li>
                     </ul>
                   </div>
